@@ -11,6 +11,7 @@
 // DEFINES
 define ('PR_VERSION', '0.1');
 define ('PR_PLUGIN_DIR' , plugin_dir_path(__FILE__));
+define ('PR_PLUGIN_URL' , plugin_dir_url(__FILE__));
 define ('PR_PLUGIN_LOCATION' , __FILE__);
 
 
@@ -19,6 +20,12 @@ require_once(PR_PLUGIN_DIR . 'php/includes.php');
 require_once(PR_PLUGIN_DIR . 'php/activation.php');
 require_once(PR_PLUGIN_DIR . 'php/settings-menu.php');
 require_once(PR_PLUGIN_DIR . 'php/post-type.php');
+
+// Add styles and javascripts
+function purchase_records_load_css(){
+	wp_enqueue_style('style', PR_PLUGIN_URL . 'css/');
+}
+add_action('admin_enqueue_scripts', 'purchase_records_load_css');
 
 
 // Add options
