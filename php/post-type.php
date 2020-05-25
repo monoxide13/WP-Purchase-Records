@@ -22,24 +22,25 @@ add_action ('init', 'purchase_records_post');
 function purchase_records_metabox_createBox($label, $inputID, $type, $value, $options=[]){
 	$output="
 		<div class='pr_o_metabox'>
-		<label for='$inputID'>$label</label>
+		<label for='$inputID' class='purchase_records_metabox_label'>$label</label>
 		<input id='$inputID' name='$inputID' type='$type' value='$value'";
 	foreach($options as $key=> $setting){
 		$output.= " $key='$setting'";
 	}
-	$output.=">
+	$output.=" class='purchase_records_metabox_input'>
 		</div>
 		";
 	echo $output;
 }
 // Order metabox html
 function purchase_records_metabox_order_html($post){
-	wp_nonce_field(plugin_basename(__FILE__), 'purchase_records_s_nonce_field');
-	$order=getOrderByPostID($post->ID);
+	wp_nonce_field(plugin_basename(__FILE__), 'purchase_records_o_nonce_field');
+	$order=pr_getOrderByPostID($post->ID);
 	?>
 	<label for='purchase_records_order_field'>Supplier of goods</label>
-	<fieldset id='purchase_records_order_field'>
-	<input id='pr_o_id' type='number' value='<?php echo "$post->ID";?>'>
+	<fieldset id='purchase_records_order_field' name='purchase_records_order_field'>
+	<label for='pr_o_id'>order_id: </label>
+	<input id='pr_o_id' name='pr_o_id' readonly='true' type='number' value='<?php echo $order['order_id'];?>'>
 	<?php
 
 	purchase_records_metabox_createBox('Supplier: ', 'pr_o_supplier', 'text', $order['supplier']);
@@ -61,7 +62,7 @@ function purchase_records_metabox_items_html($post){
 	wp_nonce_field(plugin_basename(__FILE__), 'purchase_records_i_nonce_field');
 	?>
     <label for='purchase_records_items_field'>Items ordered</label>
-	<fieldset id='prchase_records_items_field'>
+	<fieldset id='purchase_records_items_field' name='purchase_records_items_field'>
 	<?php
 	$tempField=null;
     purchase_records_metabox_items_line($tempField);
@@ -88,7 +89,17 @@ function purchase_records_metabox(){
 }
 add_action('add_meta_boxes', 'purchase_records_metabox');
 
-function purchase_records_metabox_save(){
-	hit_log('post saved: '.print_r($_POST));
+function purchase_records_metabox_save($postID, $post, $update){
+	//hit_log(print_r($POST, true); // Dump all saved post data.
+
+	if(!isset($_POST['purchase_records_o_nonce_field'])||!isset($_POST['purchase_records_i_nonce_field'])){
+		hit_log('nonce not correct');
+		return $post_id;
+	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ){
+		hit_log('autosave, ignoring');
+		return $post_id;
+	}
+	pr_saveOrderByID(['order_id'=>$_POST['pr_o_id'], 'post_id'=>$_POST['ID'], 'date_ordered'=>$_POST['pr_o_ordered'], 'date_received'=>$_POST['pr_o_received'], 'supplier'=>$_POST['pr_o_supplier'], 'shipping_cost'=>$_POST['pr_o_shipping'], 'tax'=>$_POST['pr_o_tax']]);
 }
-add_action('save_post', 'purchase_records_metabox_save');
+add_action('save_post', 'purchase_records_metabox_save', 10, 3);
