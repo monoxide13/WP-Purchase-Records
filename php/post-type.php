@@ -30,12 +30,23 @@ function purchase_records_metabox_createBox($label, $inputID, $type, $value, $op
 	$output.=" class='purchase_records_metabox_input'>
 		</div>
 		";
-	echo $output;
+	return $output;
 }
+
+function purchase_records_metabox_item_shortcut($inputID, $type, $value, $options=[]){
+	$output="
+		<input id='$inputID' name='$inputID' type='$type' value='$value' class='purchase_records_metabox_item_table_item' ";
+	foreach($options as $key=> $setting){
+		$output.= " $key='$setting'";
+	}
+	return $output;
+}
+
 // Order metabox html
 function purchase_records_metabox_order_html($post){
 	wp_nonce_field(plugin_basename(__FILE__), 'purchase_records_o_nonce_field');
 	$order=pr_getOrderByPostID($post->ID);
+	$GLOBALS['pr_order_id']=$order['order_id'];
 	?>
 	<label for='purchase_records_order_field'>Supplier of goods</label>
 	<fieldset id='purchase_records_order_field' name='purchase_records_order_field'>
@@ -43,11 +54,11 @@ function purchase_records_metabox_order_html($post){
 	<input id='pr_o_id' name='pr_o_id' readonly='true' type='number' value='<?php echo $order['order_id'];?>'>
 	<?php
 
-	purchase_records_metabox_createBox('Supplier: ', 'pr_o_supplier', 'text', $order['supplier']);
-	purchase_records_metabox_createBox('Tax: ', 'pr_o_tax', 'number', $order['tax'], ['step'=>.01]);
-	purchase_records_metabox_createBox('Shipping: ', 'pr_o_shipping', 'number', $order['shipping_cost'], ['step'=>.01]);
-	purchase_records_metabox_createBox('Date Ordered: ', 'pr_o_ordered', 'date', $order['date_ordered']);
-	purchase_records_metabox_createBox('Date Received: ', 'pr_o_received', 'date', $order['date_received']);
+	echo purchase_records_metabox_createBox('Supplier: ', 'pr_o_supplier', 'text', $order['supplier']);
+	echo purchase_records_metabox_createBox('Tax: ', 'pr_o_tax', 'number', $order['tax'], ['step'=>.01]);
+	echo purchase_records_metabox_createBox('Shipping: ', 'pr_o_shipping', 'number', $order['shipping_cost'], ['step'=>.01]);
+	echo purchase_records_metabox_createBox('Date Ordered: ', 'pr_o_ordered', 'date', $order['date_ordered']);
+	echo purchase_records_metabox_createBox('Date Received: ', 'pr_o_received', 'date', $order['date_received']);
 	
 	?>
 	</fieldset>
@@ -55,7 +66,15 @@ function purchase_records_metabox_order_html($post){
 }
 // Item metabox html
 function purchase_records_metabox_items_line($item){
-	
+?>
+	<div id='pr_i_d_<?php echo $item['line']?>' class='purchase_records_metabox_item_linecontainer'>
+	<button id='pr_i_rb_<?php echo $item['line']?>' name='pr_i_rb_<?php echo $item['line']?>' class='purchase_records_metabox_item_line'>-</button>
+<?php
+?>
+	<input id='pr_i_id_<?php echo $item['line']?>' name='pr_i_id_<?php echo $item['line']?>' value='<?php echo $item['item_id']?>' readonly='true' type='number' class='purchase_records_metabox_item_line'>
+	<input id='pr_i_is_<?php echo $item['line']?>'
+
+<?php
 }
 
 function purchase_records_metabox_items_html($post){
@@ -64,11 +83,16 @@ function purchase_records_metabox_items_html($post){
     <label for='purchase_records_items_field'>Items ordered</label>
 	<fieldset id='purchase_records_items_field' name='purchase_records_items_field'>
 	<?php
-	$tempField=null;
-    purchase_records_metabox_items_line($tempField);
+	$itemlist=pr_getItemsByOrderID($GLOBALS['pr_order_id']);
+	$x=0;
+	foreach($itemlist as $item){
+		$item['line']=++$x;
+    	purchase_records_metabox_items_line($item);
+	}
 	?>
 	</fieldset>
-	<textarea><?php print_r($_POST)?></textarea>
+	<br>
+	<button id='pr_i_ab' name='pr_i_ab'>+</button>
 	<?php
 }
 
