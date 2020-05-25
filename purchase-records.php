@@ -23,7 +23,7 @@ require_once(PR_PLUGIN_DIR . 'php/post-type.php');
 
 // Add styles and javascripts
 function purchase_records_load_css(){
-	wp_enqueue_style('style', PR_PLUGIN_URL . 'css/');
+	wp_enqueue_style('style', PR_PLUGIN_URL . 'css/style.css');
 }
 add_action('admin_enqueue_scripts', 'purchase_records_load_css');
 
