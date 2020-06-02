@@ -6,7 +6,30 @@
 
 #purchase_records_metabox_items_table{
 	border: 1px solid black;
+	display: inline-table;
+	overflow-x: scroll;
+	table-layout: fixed;
+}
+#purchase_records_metabox_items_table th{
+}
+#purchase_records_metabox_items_table .pr_c1{ /* Remove */
+}
+#purchase_records_metabox_items_table .pr_c2{ /* ID */
+}
+#purchase_records_metabox_items_table .pr_c3{ /* Item */
+}
+#purchase_records_metabox_items_table .pr_c4{ /* Tool */
+}
+#purchase_records_metabox_items_table .pr_c5{ /* Cost */
+}
+#purchase_records_metabox_items_table .pr_c6{ /* Quantity */
+}
+#purchase_records_metabox_items_table .pr_c7{ /* Weblink */
+}
+#purchase_records_metabox_items_table tr:nth-child(even){
+	background-color: #f2f2f2;
+}
+.purchase_records_metabox_item_table_items{
 	width: 100%;
-
 }
 

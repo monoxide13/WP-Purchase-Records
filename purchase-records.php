@@ -22,10 +22,11 @@ require_once(PR_PLUGIN_DIR . 'php/settings-menu.php');
 require_once(PR_PLUGIN_DIR . 'php/post-type.php');
 
 // Add styles and javascripts
-function purchase_records_load_css(){
+function purchase_records_load_csjs(){
 	wp_enqueue_style('style', PR_PLUGIN_URL . 'css/style.css');
+	wp_enqueue_script('edit-post', PR_PLUGIN_URL . 'js/edit-post.js', array('jquery'), '1.0.0', true);
 }
-add_action('admin_enqueue_scripts', 'purchase_records_load_css');
+add_action('admin_enqueue_scripts', 'purchase_records_load_csjs');
 
 
 // Add options

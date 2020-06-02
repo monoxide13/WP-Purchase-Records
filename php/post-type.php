@@ -34,11 +34,14 @@ function purchase_records_metabox_createBox($label, $inputID, $type, $value, $op
 }
 
 function purchase_records_metabox_item_shortcut($inputID, $type, $value, $options=[]){
-	$output="
-		<input id='$inputID' name='$inputID' type='$type' value='$value' class='purchase_records_metabox_item_table_item' ";
+	if($type=='checkbox' && $value==true){
+		$options['checked']='true';
+	}
+	$output="<input id='$inputID' name='$inputID' type='$type' value='$value' class='purchase_records_metabox_item_table_items' ";
 	foreach($options as $key=> $setting){
 		$output.= " $key='$setting'";
 	}
+	$output.=">";
 	return $output;
 }
 
@@ -67,14 +70,14 @@ function purchase_records_metabox_order_html($post){
 // Item metabox html
 function purchase_records_metabox_items_line($item){
 ?>
-	<div id='pr_i_d_<?php echo $item['line']?>' class='purchase_records_metabox_item_linecontainer'>
-	<button id='pr_i_rb_<?php echo $item['line']?>' name='pr_i_rb_<?php echo $item['line']?>' class='purchase_records_metabox_item_line'>-</button>
+	<td class='pr_c1'><button id='pr_i_rb[]' name='pr_i_rb[]' type='button' class='purchase_records_metabox_item_line' onclick='purchase_records_remove_meta_row(jQuery(this))'>-</button></td>
 <?php
-?>
-	<input id='pr_i_id_<?php echo $item['line']?>' name='pr_i_id_<?php echo $item['line']?>' value='<?php echo $item['item_id']?>' readonly='true' type='number' class='purchase_records_metabox_item_line'>
-	<input id='pr_i_is_<?php echo $item['line']?>'
-
-<?php
+	echo "<td class='pr_c2'>".purchase_records_metabox_item_shortcut('pr_i_id[]', 'number', $item['item_id'], ['readonly'=>'true']).'</td>';
+	echo "<td class='pr_c3'>".purchase_records_metabox_item_shortcut('pr_i_nm[]', 'textbox', $item['item']).'</td>';
+	echo "<td class='pr_c4'>".purchase_records_metabox_item_shortcut('pr_i_is[]', 'checkbox', $item['istool'], ['style'=>'position:relative;left:25%;']).'</td>';
+	echo "<td class='pr_c5'>".purchase_records_metabox_item_shortcut('pr_i_cs[]', 'number', $item['cost'], ['step'=>.01]).'</td>';
+	echo "<td class='pr_c6'>".purchase_records_metabox_item_shortcut('pr_i_qt[]', 'number', $item['quantity'], ['step'=>1, 'min'=>0]).'</td>';
+	echo "<td class='pr_c7'>".purchase_records_metabox_item_shortcut('pr_i_wl[]', 'textbox', $item['weblink']).'</td>';
 }
 
 function purchase_records_metabox_items_html($post){
@@ -85,14 +88,21 @@ function purchase_records_metabox_items_html($post){
 	<?php
 	$itemlist=pr_getItemsByOrderID($GLOBALS['pr_order_id']);
 	$x=0;
+	echo "<table id='purchase_records_metabox_items_table' width='100%'>";
+	echo "<col style='width:40px'><col style='width:50px'><col style='width:30%'>";
+	echo "<col style='width:40px'><col style='width:10%'><col style='width:100px'><col style='width:40%'>";
+	echo "<thead><tr><th class='pr_c1'></th><th class='pr_c2'>ID</th><th class='pr_c3'>Item</th><th class='pr_c4'>Tool?</th><th class='pr_c5'>Cost</th><th class='pr_c6'>Quantity</th><th class='pr_c7'>Weblink</th></tr></thead><tbody>";
 	foreach($itemlist as $item){
 		$item['line']=++$x;
+		echo '<tr>';
     	purchase_records_metabox_items_line($item);
+		echo '</tr>';
 	}
+	echo '</tbody></table>';
 	?>
 	</fieldset>
 	<br>
-	<button id='pr_i_ab' name='pr_i_ab'>+</button>
+	<button id='pr_i_ab' name='pr_i_ab' type='button' onclick='purchase_records_add_meta_row()'>+</button>
 	<?php
 }
 
@@ -114,7 +124,6 @@ function purchase_records_metabox(){
 add_action('add_meta_boxes', 'purchase_records_metabox');
 
 function purchase_records_metabox_save($postID, $post, $update){
-	//hit_log(print_r($POST, true); // Dump all saved post data.
 
 	if(!isset($_POST['purchase_records_o_nonce_field'])||!isset($_POST['purchase_records_i_nonce_field'])){
 		hit_log('nonce not correct');
@@ -124,6 +133,16 @@ function purchase_records_metabox_save($postID, $post, $update){
 		hit_log('autosave, ignoring');
 		return $post_id;
 	}
+	hit_log('saving...\n');
+
+	// Save Order info
 	pr_saveOrderByID(['order_id'=>$_POST['pr_o_id'], 'post_id'=>$_POST['ID'], 'date_ordered'=>$_POST['pr_o_ordered'], 'date_received'=>$_POST['pr_o_received'], 'supplier'=>$_POST['pr_o_supplier'], 'shipping_cost'=>$_POST['pr_o_shipping'], 'tax'=>$_POST['pr_o_tax']]);
+	hit_log(print_r($_POST, true));
+
+	// Save Item info
+	$itemCount=0;//sizeof($_POST['pr_i_id[]']);
+	for($x=0; $x<$itemCount; $x++){
+		hit_log('PostedID:'.$_POST['pr_i_id[]'][$x].'\n');
+	}
 }
 add_action('save_post', 'purchase_records_metabox_save', 10, 3);
