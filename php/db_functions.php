@@ -22,20 +22,55 @@ function pr_getItemsByOrderID($orderID){
 	return $results;
 }
 
-function pr_saveOrderByID($pairs){
+function pr_saveOrderByID($order){
 	global $wpdb;
-	if($pairs['order_id']==0){
-		unset($pairs['order_id']);
-		$result=$wpdb->insert("{$wpdb->prefix}pr_orders", $pairs);
-		if($result==false){
+	if($order['order_id']==0){
+		unset($order['order_id']);
+		$result=$wpdb->insert("{$wpdb->prefix}pr_orders", $order);
+		if($result===false){
 			error_log("DB Error: ".__file__.__line__);
 		}
 	}else{
-		$order_id=$pairs['order_id'];
-		unset($pairs['order_id']);
-		$result=$wpdb->update("{$wpdb->prefix}pr_orders", $pairs, ['order_id'=>$order_id]);
-		if($result==false){
+		$order_id=$order['order_id'];
+		unset($order['order_id']);
+		$result=$wpdb->update("{$wpdb->prefix}pr_orders", $order, ['order_id'=>$order_id]);
+		if($result===false){
+			error_log("DB Error: ".__file__.' '.__line__);
+		}
+	}
+}
+function pr_removeOrderByID($orderID){
+	global $wpdb;
+	$result=$wpdb->delete("{$wpdb->prefix}pr_items", ['order_id'=>$orderID]);
+	if($result===false){
+		error_log("DB Error: ".__file__.__line__);
+	}
+	$result=$wpdb->delete("{$wpdb->prefix}pr_orders", ['order_id'=>$orderID]);
+	if($result===false){
+		error_log("DB Error: ".__file__.__line__);
+	}
+}
+function pr_saveItemByID($item){
+	global $wpdb;
+	if($item['item_id']==0){
+		unset($item['item_id']);
+		$result=$wpdb->insert("{$wpdb->prefix}pr_items", $item);
+		if($result===false){
 			error_log("DB Error: ".__file__.__line__);
 		}
+	}else{
+		$item_id=$item['item_id'];
+		unset($item['item_id']);
+		$result=$wpdb->update("{$wpdb->prefix}pr_items", $item, ['item_id'=>$item_id]);
+		if($result===false){
+			error_log("DB Error: ".__file__.' '.__line__);
+		}
+	}
+}
+function pr_removeItemByID($itemID){
+	global $wpdb;
+	$result=$wpdb->delete("{$wpdb->prefix}pr_items", ['item_id'=>$itemID]);
+	if($result===false){
+		error_log("DB Error: ".__file__.' '.__line__);
 	}
 }

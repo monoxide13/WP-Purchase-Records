@@ -90,7 +90,7 @@ function purchase_records_metabox_items_html($post){
 	$x=0;
 	echo "<table id='purchase_records_metabox_items_table' width='100%'>";
 	echo "<col style='width:40px'><col style='width:50px'><col style='width:30%'>";
-	echo "<col style='width:40px'><col style='width:10%'><col style='width:100px'><col style='width:40%'>";
+	echo "<col style='width:40px'><col style='width:100px'><col style='width:70px'><col style='width:40%'>";
 	echo "<thead><tr><th class='pr_c1'></th><th class='pr_c2'>ID</th><th class='pr_c3'>Item</th><th class='pr_c4'>Tool?</th><th class='pr_c5'>Cost</th><th class='pr_c6'>Quantity</th><th class='pr_c7'>Weblink</th></tr></thead><tbody>";
 	foreach($itemlist as $item){
 		$item['line']=++$x;
@@ -137,12 +137,23 @@ function purchase_records_metabox_save($postID, $post, $update){
 
 	// Save Order info
 	pr_saveOrderByID(['order_id'=>$_POST['pr_o_id'], 'post_id'=>$_POST['ID'], 'date_ordered'=>$_POST['pr_o_ordered'], 'date_received'=>$_POST['pr_o_received'], 'supplier'=>$_POST['pr_o_supplier'], 'shipping_cost'=>$_POST['pr_o_shipping'], 'tax'=>$_POST['pr_o_tax']]);
-	hit_log(print_r($_POST, true));
 
 	// Save Item info
-	$itemCount=0;//sizeof($_POST['pr_i_id[]']);
+	$itemCount=sizeof($_POST['pr_i_id']); // How many items did user submit?
+	// Get a list of previously saved items.
+	$existingItemIDs=array_column(pr_getItemsByOrderID($_POST['pr_o_id']), 'item_id');
+	
 	for($x=0; $x<$itemCount; $x++){
-		hit_log('PostedID:'.$_POST['pr_i_id[]'][$x].'\n');
+		// If items have other ID, update and remove from list.
+		pr_saveItemByID(['item_id'=>$_POST['pr_i_id'][$x], 'order_id'=>$_POST['pr_o_id'], 'istool'=>$_POST['pr_i_is'][$x], 'item'=>$_POST['pr_i_nm'][$x], 'cost'=>$_POST['pr_i_cs'][$x], 'quantity'=>$_POST['pr_i_qt'][$x], 'weblink'=>$_POST['pr_i_wl'][$x]]);
+		if($_POST['pr_i_id'][$x]>0){
+			unset($existingItemIDs[array_search($_POST['pr_i_id'][$x], $existingItemIDs)]);
+		}
 	}
+	// Any items still in list should be removed from DB.
+	foreach($existingItemIDs as $x){
+		pr_removeItemByID($x);
+	}
+	hit_log('IDs to remove:'.print_r($existingItemIDs, true)."\n");
 }
 add_action('save_post', 'purchase_records_metabox_save', 10, 3);
