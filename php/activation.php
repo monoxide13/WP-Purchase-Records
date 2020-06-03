@@ -24,16 +24,16 @@ function purchase_records_create_db(){
 		item_id int(10) unsigned NOT NULL AUTO_INCREMENT,
 		order_id int(10) unsigned NOT NULL,
 		build_category_id int(10) unsigned NOT NULL,
-		istool bit(1) DEFAULT NULL,
+		istool bit(1) DEFAULT b'0',
 		item varchar(64) NOT NULL,
-		cost double unsigned NOT NULL,
-		quantity int(10) unsigned NOT NULL,
-		weblink varchar(128) DEFAULT NULL,
+		cost double(10,2) NOT NULL DEFAULT 0.00,
+		quantity int(10) unsigned NOT NULL DEFAULT 1,
+		weblink varchar(128) DEFAULT '',
 		PRIMARY KEY  (purchase_id),
 		UNIQUE KEY purchase_id_UNIQUE (purchase_id),
 		KEY fk_order_id_idx (order_id),
 		KEY fk_build_category_idx (build_category_id),
-		CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES pr_orders (order_id)
+		CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES {$wpdb->prefix}pr_orders (order_id)
 	) $charset_collate ENGINE=InnoDB;
 	";
 	$wpdb->query($sql);
