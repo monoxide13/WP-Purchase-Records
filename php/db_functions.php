@@ -5,7 +5,15 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 function pr_getOrderByPostID($postID){
 	global $wpdb;
+	if(!(isset($postID) && $postID!="")){
+		hit_log("Unexpected empty db call: ".__file__.__line__);
+		return null;
+	}
 	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pr_orders WHERE post_id=$postID", ARRAY_A);
+	if(!isset($postID)){
+		hit_log("Unexpected empty db call: ".__file__.__line__);
+		return null;
+	}
 	if($results==null){
 		// Possibly fill values with nothing?
 		return ['order_id'=>'0', 'post_id'=>$postID, 'date_ordered'=>'', 'date_received'=>'', 'supplier'=>'', 'shipping_cost'=>0, 'tax'=>0];
@@ -14,12 +22,21 @@ function pr_getOrderByPostID($postID){
 }
 function pr_getOrderByOrderID($orderID){
 	global $wpdb;
+	if(!(isset($orderID) && $orderID!="")){
+		hit_log("Unexpected empty db call: ".__file__.__line__);
+		return null;
+	}
 	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pr_orders WHERE order_id=$orderID", ARRAY_A);
-	return $results[0];
+	hit_log(print_r($results, true));
+	return $results;
 }
 
 function pr_getItemsByOrderID($orderID){
 	global $wpdb;
+	if(!(isset($orderID) && $orderID!="")){
+		hit_log("Unexpected empty db call: ".__file__.__line__);
+		return null;
+	}
 	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pr_items WHERE order_id=$orderID", ARRAY_A);
 	if($results==null){
 		return [['item_id'=>'0', 'order_id'=>$orderID, 'build_category'=>0, 'istool'=>false, 'item'=>'', 'cost'=>0, 'quantity'=>0, 'weblink'=>0]];
@@ -29,6 +46,10 @@ function pr_getItemsByOrderID($orderID){
 
 function pr_saveOrderByID($order){
 	global $wpdb;
+	if(!(isset($order) && $order['order_id']!="")){
+		hit_log("Unexpected empty db call: ".__file__.__line__);
+		return null;
+	}
 	if($order['order_id']==0){
 		unset($order['order_id']);
 		$result=$wpdb->insert("{$wpdb->prefix}pr_orders", $order);
@@ -46,6 +67,10 @@ function pr_saveOrderByID($order){
 }
 function pr_removeOrderByID($orderID){
 	global $wpdb;
+	if(!(isset($orderID) && $orderID!="")){
+		hit_log("Unexpected empty db call: ".__file__.__line__);
+		return null;
+	}
 	$result=$wpdb->delete("{$wpdb->prefix}pr_items", ['order_id'=>$orderID]);
 	if($result===false){
 		error_log("DB Error: ".__file__.__line__);
@@ -57,6 +82,10 @@ function pr_removeOrderByID($orderID){
 }
 function pr_saveItemByID($item){
 	global $wpdb;
+	if(!(isset($item) && $item['item_id']!="")){
+		hit_log("Unexpected empty db call: ".__file__.__line__);
+		return null;
+	}
 	if($item['item_id']==0){
 		unset($item['item_id']);
 		$result=$wpdb->insert("{$wpdb->prefix}pr_items", $item);
@@ -74,6 +103,10 @@ function pr_saveItemByID($item){
 }
 function pr_removeItemByID($itemID){
 	global $wpdb;
+	if(!(isset($itemID) && $itemID!="")){
+		hit_log("Unexpected empty db call: ".__file__.__line__);
+		return null;
+	}
 	$result=$wpdb->delete("{$wpdb->prefix}pr_items", ['item_id'=>$itemID]);
 	if($result===false){
 		error_log("DB Error: ".__file__.' '.__line__);
