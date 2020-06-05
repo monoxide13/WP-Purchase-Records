@@ -12,6 +12,11 @@ function pr_getOrderByPostID($postID){
 	}
 	return $results[0];
 }
+function pr_getOrderByOrderID($orderID){
+	global $wpdb;
+	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pr_orders WHERE order_id=$orderID", ARRAY_A);
+	return $results[0];
+}
 
 function pr_getItemsByOrderID($orderID){
 	global $wpdb;

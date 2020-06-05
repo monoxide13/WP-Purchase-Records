@@ -1,6 +1,6 @@
 <?php
 
-function purchase_records_create_db(){
+function purchase_records_activation(){
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	hit_log('Creating DB');
 	global $wpdb;
@@ -38,18 +38,17 @@ function purchase_records_create_db(){
 	";
 	$wpdb->query($sql);
 	//add_option( 'purchase_orders_db_version', $db_version);
+	flush_rewrite_rules(false);
 }
-register_activation_hook(PR_PLUGIN_LOCATION, 'purchase_records_create_db' );
+register_activation_hook(PR_PLUGIN_LOCATION, 'purchase_records_activation' );
 
-function purchase_records_delete_db(){
+function purchase_records_deactivation(){
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	hit_log('Deleting DB');
 	global $wpdb;
-	
-	hit_log(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-	$wpdb->query( "DROP TABLE IF EXISTS pr_orders;");
-	$wpdb->query( "DROP TABLE IF EXISTS pr_items;");
+	//$wpdb->query( "DROP TABLE IF EXISTS pr_orders;");
+	//$wpdb->query( "DROP TABLE IF EXISTS pr_items;");
 }
-register_deactivation_hook(PR_PLUGIN_LOCATION, 'purchase_records_delete_db');
+register_deactivation_hook(PR_PLUGIN_LOCATION, 'purchase_records_deactivation');
 

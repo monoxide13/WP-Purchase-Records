@@ -4,17 +4,39 @@ require_once(PR_PLUGIN_DIR . 'php/db_functions.php');
 
 // Create custom post
 function purchase_records_post(){
-	register_post_type('pr_purchase_record',
-		array(
-			'labels'=>array(
-				'name' => __('Purchase Records', 'textdomain'),
-				'singular_name' => __('Purchase Record', 'textdomain'),
-			),
-			'public' => true,
-			'has_archive' => true,
-			'rewrite' => array( 'slug' => 'purchases' ),
-		)
+	$labels = array(
+		'name'               => _x( 'Purchase Records', 'post type general name', 'purchase-records-text' ),
+		'singular_name'      => _x( 'Purchase Record', 'post type singular name', 'purchase-records-text' ),
+		'menu_name'          => _x( 'Purchases', 'admin menu', 'purchase-records-text' ),
+		'name_admin_bar'     => _x( 'Purchase', 'add new on admin bar', 'purchase-records-text' ),
+		'add_new'            => _x( 'Add New Purchase', 'book', 'purchase-records-text' ),
+		'add_new_item'       => __( 'Add New Purchase Record', 'purchase-records-text' ),
+		'new_item'           => __( 'New Record', 'purchase-records-text' ),
+		'edit_item'          => __( 'Edit Record', 'purchase-records-text' ),
+		'view_item'          => __( 'View Record', 'purchase-records-text' ),
+		'all_items'          => __( 'All Records', 'purchase-records-text' ),
+		'search_items'       => __( 'Search Records', 'purchase-records-text' ),
+		'parent_item_colon'  => __( 'Parent Record:', 'purchase-records-text' ),
+		'not_found'          => __( 'No Record found.', 'purchase-records-text' ),
+		'not_found_in_trash' => __( 'No record found in Trash.', 'purchase-records-text' )
 	);
+
+	$args = array(
+		'labels'             => $labels,
+		'description'        => __( 'A way to log purchases made on a project.', 'purchase-records-text' ),
+		'public'             => true,
+		'publicly_queryable' => true,
+		'show_ui'            => true,
+		'show_in_menu'       => true,
+		'query_var'          => true,
+		'rewrite' => array( 'slug' => 'purchases' ),
+		'capability_type'    => 'post',
+		'has_archive'        => true,
+		'hierarchical'       => false,
+		'menu_position'      => null,
+		'supports'           => array( 'title', 'editor', 'author', 'comments' )
+	);
+	register_post_type('pr_purchase_record', $args);
 };
 add_action ('init', 'purchase_records_post');
 
@@ -49,6 +71,7 @@ function purchase_records_metabox_item_shortcut($inputID, $type, $value, $option
 function purchase_records_metabox_order_html($post){
 	wp_nonce_field(plugin_basename(__FILE__), 'purchase_records_o_nonce_field');
 	$order=pr_getOrderByPostID($post->ID);
+	//$order=pr_getOrderByPostID(159);
 	$GLOBALS['pr_order_id']=$order['order_id'];
 	?>
 	<label for='purchase_records_order_field'>Supplier of goods</label>
@@ -127,11 +150,11 @@ function purchase_records_metabox_save($postID, $post, $update){
 
 	if(!isset($_POST['purchase_records_o_nonce_field'])||!isset($_POST['purchase_records_i_nonce_field'])){
 		hit_log('nonce not correct');
-		return $post_id;
+		return $postID;
 	}
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ){
 		hit_log('autosave, ignoring');
-		return $post_id;
+		return $postID;
 	}
 	hit_log('saving...\n');
 

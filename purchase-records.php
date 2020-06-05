@@ -20,6 +20,7 @@ require_once(PR_PLUGIN_DIR . 'php/includes.php');
 require_once(PR_PLUGIN_DIR . 'php/activation.php');
 require_once(PR_PLUGIN_DIR . 'php/settings-menu.php');
 require_once(PR_PLUGIN_DIR . 'php/post-type.php');
+require_once(PR_PLUGIN_DIR . 'php/shortcodes.php');
 
 // Add styles and javascripts
 function purchase_records_load_csjs(){
@@ -30,21 +31,5 @@ add_action('admin_enqueue_scripts', 'purchase_records_load_csjs');
 
 
 // Add options
-add_option('purchase_records_post_typs', 'post');
+//add_option('purchase_records_post_types', 'post');
 
-
-// Add shortcodes
-function purchase_records_shortcode_purchase_order($atts){
-	// Attributes
-	$atts = shortcode_atts(
-		array(
-			'order' => '',
-			'category' => '',
-		),
-		$atts,
-		'pr_totalsum'
-	);
-	// return the price value;
-	return '20';
-}
-add_shortcode('pr_totalsum', 'purchase_records_shortcode_purchase_order');

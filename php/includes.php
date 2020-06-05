@@ -11,5 +11,3 @@ if ( ! function_exists('hit_log')) {
 	  fclose($logFile);
    }
 }
-
-?>
