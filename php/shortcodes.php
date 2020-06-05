@@ -1,10 +1,16 @@
 <?php
 
-function purchase_records_order_shortcode($orderID){
-	//$order=(isset($orderID))?(pr_getOrderByOrderID($orderID)):(pr_getOrderByPostID(get_the_ID()));
-	//$html = "<div><h3 class='purchase_records_shortcode_order'>Order</h3>";
+function purchase_records_order_shortcode($atts){
+	$atts = shortcode_atts(
+		array(
+			'postid' => get_the_ID(),
+		), $atts, 'pr-order');
+
+	$html = "<div><h3 class='purchase_records_shortcode_order'>Order</h3>";
+	$html .= "PostID:".$atts['postid']."</div>";
+	return $html;
 }
-function purchase_records_item_shortcode($orderID, $items){
+function purchase_records_item_shortcode($atts=[]){
 
 }
 
