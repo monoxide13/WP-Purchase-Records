@@ -27,8 +27,7 @@ function pr_getOrderByOrderID($orderID){
 		return null;
 	}
 	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pr_orders WHERE order_id=$orderID", ARRAY_A);
-	hit_log(print_r($results, true));
-	return $results;
+	return $results[0];
 }
 
 function pr_getItemsByOrderID($orderID){

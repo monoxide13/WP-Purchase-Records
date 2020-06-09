@@ -1,0 +1,13 @@
+
+.purchase_records_so{
+	width: 100%;
+}
+.purchase_records_so_container{
+	display: inline-block;
+}
+.purchase_records_so_item{
+	display: inline-block;
+	padding-right: 20px;
+	padding-bottom: 2px;
+	text-align: left;
+}

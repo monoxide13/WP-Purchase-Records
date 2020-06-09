@@ -23,13 +23,17 @@ require_once(PR_PLUGIN_DIR . 'php/post-type.php');
 require_once(PR_PLUGIN_DIR . 'php/shortcodes.php');
 
 // Add styles and javascripts
-function purchase_records_load_csjs(){
-	wp_enqueue_style('style', PR_PLUGIN_URL . 'css/style.css');
+function purchase_records_load_admin_csjs(){
+	wp_enqueue_style('style', PR_PLUGIN_URL . 'css/admin.css');
 	wp_enqueue_script('edit-post', PR_PLUGIN_URL . 'js/edit-post.js', array('jquery'), '1.0.0', true);
 }
-add_action('admin_enqueue_scripts', 'purchase_records_load_csjs');
+add_action('admin_enqueue_scripts', 'purchase_records_load_admin_csjs');
 
 
+function purchase_records_load_csjs(){
+	wp_enqueue_style('style', PR_PLUGIN_URL . 'css/shortcode.css');
+}
+add_action('wp_enqueue_scripts', 'purchase_records_load_csjs');
 // Add options
 //add_option('purchase_records_post_types', 'post');
 
