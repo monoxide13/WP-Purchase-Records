@@ -43,6 +43,19 @@ function pr_getItemsByOrderID($orderID){
 	return $results;
 }
 
+function pr_getItemByItemID($itemID){
+	global $wpdb;
+	if(!(isset($itemID) && $itemID!="")){
+		hit_log("Unexpected empty db call: ".__file__.__line__);
+		return null;
+	}
+	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pr_items WHERE item_id=$itemID", ARRAY_A);
+	if($results==null){
+		return null;
+	}
+	return $results[0];
+}
+
 function pr_saveOrderByID($order){
 	global $wpdb;
 	if(!(isset($order) && $order['order_id']!="")){
