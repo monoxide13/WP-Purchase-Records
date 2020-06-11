@@ -58,6 +58,7 @@ function pr_getItemByItemID($itemID){
 
 function pr_saveOrderByID($order){
 	global $wpdb;
+	$order_id = 0;
 	if(!(isset($order) && $order['order_id']!="")){
 		hit_log("Unexpected empty db call: ".__file__.__line__);
 		return null;
@@ -65,6 +66,7 @@ function pr_saveOrderByID($order){
 	if($order['order_id']==0){
 		unset($order['order_id']);
 		$result=$wpdb->insert("{$wpdb->prefix}pr_orders", $order);
+		$order_id = $wpdb->insert_id;
 		if($result===false){
 			error_log("DB Error: ".__file__.__line__);
 		}
@@ -76,6 +78,7 @@ function pr_saveOrderByID($order){
 			error_log("DB Error: ".__file__.' '.__line__);
 		}
 	}
+	return $order_id;
 }
 function pr_removeOrderByID($orderID){
 	global $wpdb;
@@ -94,6 +97,7 @@ function pr_removeOrderByID($orderID){
 }
 function pr_saveItemByID($item){
 	global $wpdb;
+	$item_id=0;
 	if(!(isset($item) && $item['item_id']!="")){
 		hit_log("Unexpected empty db call: ".__file__.__line__);
 		return null;
@@ -101,6 +105,7 @@ function pr_saveItemByID($item){
 	if($item['item_id']==0){
 		unset($item['item_id']);
 		$result=$wpdb->insert("{$wpdb->prefix}pr_items", $item);
+		$item_id = $wpdb->insert_id;
 		if($result===false){
 			error_log("DB Error: ".__file__.__line__);
 		}
@@ -112,6 +117,7 @@ function pr_saveItemByID($item){
 			error_log("DB Error: ".__file__.' '.__line__);
 		}
 	}
+	return $item_id;
 }
 function pr_removeItemByID($itemID){
 	global $wpdb;

@@ -60,7 +60,6 @@ function purchase_records_metabox_createBox($label, $inputID, $type, $value, $op
 function purchase_records_metabox_order_html($post){
 	wp_nonce_field(plugin_basename(__FILE__), 'purchase_records_o_nonce_field');
 	$order=pr_getOrderByPostID($post->ID);
-	//$order=pr_getOrderByPostID(159);
 	$GLOBALS['pr_order_id']=$order['order_id'];
 	?>
 	<label for='purchase_records_order_field'>Supplier of goods</label>
@@ -160,7 +159,7 @@ function purchase_records_metabox_save($postID, $post, $update){
 	hit_log('saving...\n');
 
 	// Save Order info
-	pr_saveOrderByID(['order_id'=>$_POST['pr_o_id'], 'post_id'=>$_POST['ID'], 'date_ordered'=>$_POST['pr_o_ordered'], 'date_received'=>$_POST['pr_o_received'], 'supplier'=>$_POST['pr_o_supplier'], 'shipping_cost'=>$_POST['pr_o_shipping'], 'tax'=>$_POST['pr_o_tax']]);
+	$orderID=pr_saveOrderByID(['order_id'=>$_POST['pr_o_id'], 'post_id'=>$_POST['ID'], 'date_ordered'=>$_POST['pr_o_ordered'], 'date_received'=>$_POST['pr_o_received'], 'supplier'=>$_POST['pr_o_supplier'], 'shipping_cost'=>$_POST['pr_o_shipping'], 'tax'=>$_POST['pr_o_tax']]);
 
 	// Save Item info
 	$itemCount=sizeof($_POST['pr_i_id']); // How many items did user submit?
@@ -169,7 +168,7 @@ function purchase_records_metabox_save($postID, $post, $update){
 	
 	for($x=0; $x<$itemCount; $x++){
 		// If items have other ID, update and remove from list.
-		pr_saveItemByID(['item_id'=>$_POST['pr_i_id'][$x], 'order_id'=>$_POST['pr_o_id'], 'istool'=>$_POST['pr_i_is'][$x], 'item'=>$_POST['pr_i_nm'][$x], 'cost'=>$_POST['pr_i_cs'][$x], 'quantity'=>$_POST['pr_i_qt'][$x], 'weblink'=>$_POST['pr_i_wl'][$x]]);
+		pr_saveItemByID(['item_id'=>$_POST['pr_i_id'][$x], 'order_id'=>$orderID, 'istool'=>$_POST['pr_i_is'][$x], 'item'=>$_POST['pr_i_nm'][$x], 'cost'=>$_POST['pr_i_cs'][$x], 'quantity'=>$_POST['pr_i_qt'][$x], 'weblink'=>$_POST['pr_i_wl'][$x]]);
 		if($_POST['pr_i_id'][$x]>0){
 			unset($existingItemIDs[array_search($_POST['pr_i_id'][$x], $existingItemIDs)]);
 		}
