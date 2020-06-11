@@ -38,7 +38,7 @@ function pr_getItemsByOrderID($orderID){
 	}
 	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pr_items WHERE order_id=$orderID", ARRAY_A);
 	if($results==null){
-		return [['item_id'=>'0', 'order_id'=>$orderID, 'build_category'=>0, 'istool'=>false, 'item'=>'', 'cost'=>0, 'quantity'=>0, 'weblink'=>0]];
+		return [];
 	}
 	return $results;
 }
