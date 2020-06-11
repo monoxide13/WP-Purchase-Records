@@ -11,14 +11,14 @@ function purchase_records_post(){
 		'name_admin_bar'     => _x( 'Purchase', 'add new on admin bar', 'purchase-records-text' ),
 		'add_new'            => _x( 'Add New Purchase', 'book', 'purchase-records-text' ),
 		'add_new_item'       => __( 'Add New Purchase Record', 'purchase-records-text' ),
-		'new_item'           => __( 'New Record', 'purchase-records-text' ),
-		'edit_item'          => __( 'Edit Record', 'purchase-records-text' ),
-		'view_item'          => __( 'View Record', 'purchase-records-text' ),
-		'all_items'          => __( 'All Records', 'purchase-records-text' ),
-		'search_items'       => __( 'Search Records', 'purchase-records-text' ),
+		'new_item'           => __( 'New Purchase Record', 'purchase-records-text' ),
+		'edit_item'          => __( 'Edit Purchase Record', 'purchase-records-text' ),
+		'view_item'          => __( 'View Purchase Record', 'purchase-records-text' ),
+		'all_items'          => __( 'All Puchases Records', 'purchase-records-text' ),
+		'search_items'       => __( 'Search Puchase Records', 'purchase-records-text' ),
 		'parent_item_colon'  => __( 'Parent Record:', 'purchase-records-text' ),
-		'not_found'          => __( 'No Record found.', 'purchase-records-text' ),
-		'not_found_in_trash' => __( 'No record found in Trash.', 'purchase-records-text' )
+		'not_found'          => __( 'No Records found.', 'purchase-records-text' ),
+		'not_found_in_trash' => __( 'No records found in Trash.', 'purchase-records-text' )
 	);
 
 	$args = array(
@@ -98,7 +98,7 @@ function purchase_records_metabox_items_line($item){
 	echo "<td class='pr_c2'>".purchase_records_metabox_item_shortcut('pr_i_id[]', 'number', $item['item_id'], ['readonly'=>'true']).'</td>';
 	echo "<td class='pr_c3'>".purchase_records_metabox_item_shortcut('pr_i_nm[]', 'textbox', $item['item']).'</td>';
 	echo "<td class='pr_c4'>".purchase_records_metabox_item_shortcut('pr_i_is[]', 'checkbox', $item['istool'], ['style'=>'position:relative;left:25%;']).'</td>';
-	echo "<td class='pr_c5'>".purchase_records_metabox_item_shortcut('pr_i_cs[]', 'number', $item['cost'], ['step'=>.01]).'</td>';
+	echo "<td class='pr_c5'>".purchase_records_metabox_item_shortcut('pr_i_cs[]', 'number', $item['cost'], ['step'=>.001]).'</td>';
 	echo "<td class='pr_c6'>".purchase_records_metabox_item_shortcut('pr_i_qt[]', 'number', $item['quantity'], ['step'=>1, 'min'=>0]).'</td>';
 	echo "<td class='pr_c7'>".purchase_records_metabox_item_shortcut('pr_i_wl[]', 'textbox', $item['weblink']).'</td>';
 }
