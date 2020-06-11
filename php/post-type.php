@@ -55,17 +55,6 @@ function purchase_records_metabox_createBox($label, $inputID, $type, $value, $op
 	return $output;
 }
 
-function purchase_records_metabox_item_shortcut($inputID, $type, $value, $options=[]){
-	if($type=='checkbox' && $value==true){
-		$options['checked']='true';
-	}
-	$output="<input id='$inputID' name='$inputID' type='$type' value='$value' class='purchase_records_metabox_item_table_items' ";
-	foreach($options as $key=> $setting){
-		$output.= " $key='$setting'";
-	}
-	$output.=">";
-	return $output;
-}
 
 // Order metabox html
 function purchase_records_metabox_order_html($post){
@@ -80,7 +69,7 @@ function purchase_records_metabox_order_html($post){
 	<input id='pr_o_id' name='pr_o_id' readonly='true' type='number' value='<?php echo $order['order_id'];?>'>
 	<?php
 
-	echo purchase_records_metabox_createBox('Supplier: ', 'pr_o_supplier', 'text', $order['supplier']);
+	echo purchase_records_metabox_createBox('Supplier: ', 'pr_o_supplier', 'text', htmlentities(stripslashes($order['supplier']), ENT_QUOTES));
 	echo purchase_records_metabox_createBox('Tax: ', 'pr_o_tax', 'number', $order['tax'], ['step'=>.01]);
 	echo purchase_records_metabox_createBox('Shipping: ', 'pr_o_shipping', 'number', $order['shipping_cost'], ['step'=>.01]);
 	echo purchase_records_metabox_createBox('Date Ordered: ', 'pr_o_ordered', 'date', $order['date_ordered']);
@@ -91,16 +80,27 @@ function purchase_records_metabox_order_html($post){
 	<?php
 }
 // Item metabox html
+function purchase_records_metabox_item_shortcut($inputID, $type, $value, $options=[]){
+	if($type=='checkbox' && $value==true){
+		$options['checked']='true';
+	}
+	$output="<input id='$inputID' name='$inputID' type='$type' value='$value' class='purchase_records_metabox_item_table_items' ";
+	foreach($options as $key=> $setting){
+		$output.= " $key='$setting'";
+	}
+	$output.=">";
+	return $output;
+}
 function purchase_records_metabox_items_line($item){
 ?>
 	<td class='pr_c1'><button id='pr_i_rb[]' name='pr_i_rb[]' type='button' class='purchase_records_metabox_item_line' onclick='purchase_records_remove_meta_row(jQuery(this))'>-</button></td>
 <?php
 	echo "<td class='pr_c2'>".purchase_records_metabox_item_shortcut('pr_i_id[]', 'number', $item['item_id'], ['readonly'=>'true']).'</td>';
-	echo "<td class='pr_c3'>".purchase_records_metabox_item_shortcut('pr_i_nm[]', 'textbox', $item['item']).'</td>';
+	echo "<td class='pr_c3'>".purchase_records_metabox_item_shortcut('pr_i_nm[]', 'textbox', htmlentities(stripslashes($item['item']), ENT_QUOTES)).'</td>';
 	echo "<td class='pr_c4'>".purchase_records_metabox_item_shortcut('pr_i_is[]', 'checkbox', $item['istool'], ['style'=>'position:relative;left:25%;']).'</td>';
 	echo "<td class='pr_c5'>".purchase_records_metabox_item_shortcut('pr_i_cs[]', 'number', $item['cost'], ['step'=>.001]).'</td>';
 	echo "<td class='pr_c6'>".purchase_records_metabox_item_shortcut('pr_i_qt[]', 'number', $item['quantity'], ['step'=>1, 'min'=>0]).'</td>';
-	echo "<td class='pr_c7'>".purchase_records_metabox_item_shortcut('pr_i_wl[]', 'textbox', $item['weblink']).'</td>';
+	echo "<td class='pr_c7'>".purchase_records_metabox_item_shortcut('pr_i_wl[]', 'textbox', htmlentities(stripslashes($item['weblink']), ENT_QUOTES)).'</td>';
 }
 
 function purchase_records_metabox_items_html($post){
@@ -146,6 +146,7 @@ function purchase_records_metabox(){
 }
 add_action('add_meta_boxes', 'purchase_records_metabox');
 
+// Save inputs
 function purchase_records_metabox_save($postID, $post, $update){
 
 	if(!isset($_POST['purchase_records_o_nonce_field'])||!isset($_POST['purchase_records_i_nonce_field'])){
