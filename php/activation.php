@@ -26,7 +26,7 @@ function purchase_records_activation(){
 		build_category_id int(10) unsigned NOT NULL,
 		istool bit(1) DEFAULT b'0',
 		item varchar(64) NOT NULL,
-		cost double(10,2) NOT NULL DEFAULT 0.00,
+		cost double(10,3) NOT NULL DEFAULT 0.00,
 		quantity int(10) unsigned NOT NULL DEFAULT 1,
 		weblink varchar(128) DEFAULT '',
 		PRIMARY KEY  (purchase_id),
