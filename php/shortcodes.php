@@ -23,6 +23,8 @@ function purchase_records_order_shortcode($atts){
 
 	return $html;
 }
+add_shortcode('pr-order', 'purchase_records_order_shortcode');
+
 function purchase_records_item_shortcode($atts=[]){
 	$atts = shortcode_atts(
 		array(
@@ -44,16 +46,53 @@ function purchase_records_item_shortcode($atts=[]){
 	}
 	$html = "<div class='purchase_records_si'><h3>Items</h3>";
 	$html .= "<table class='purchase_records_si_container'><thead><tr>";
-	$html .= "<th>Item ID</th><th>Item</th><th>Tool?</th><th>Cost</th><th>Qty</th><th>Weblink</th>";
+	$html .= "<th>Item</th><th>Tool?</th><th>Cost</th><th>Qty</th>";
 	$html .= "</tr></thead><tbody>";
 	foreach($itemList as $item){
-		$html .= "<tr><td>".$item['item_id']."</td><td>".stripslashes($item['item'])."</td><td>".$item['istool']."</td><td>".$item['cost']."</td><td>".$item['quantity']."</td><td>".stripslashes($item['weblink'])."</td></tr>";
+		$html .= "<tr><td>";
+		if($item['weblink']==null OR $item['weblink']==''){
+			$html .= stripslashes($item['item']);
+		}else{
+			$html .= "<a href='".stripslashes($item['weblink'])."'>".stripslashes($item['item'])."</a>";
+		}
+		$html .= "</td><td>".$item['istool']."</td><td>".$item['cost']."</td><td>".$item['quantity']."</td></tr>";
 	}
 	$html .= "</tbody></table></div>";
-	$html .= "End";
 	return $html;
 }
-
-
-add_shortcode('pr-order', 'purchase_records_order_shortcode');
 add_shortcode('pr-item', 'purchase_records_item_shortcode');
+
+function purchase_records_cost_shortcode($atts=[]){
+	global $wpdb;
+	$join = false;
+	$atts = shortcode_atts(
+		array(
+			'orderid' => 0,
+			'itemid' => 0,
+			'type' => '',
+			'value' => 'total',
+		), $atts, 'pr-cost');
+	if($atts['orderid']!=0){
+		$join = true;
+	}
+	if($atts['itemid']!=0){
+		$atts['orderid']=0;
+		$source='items';
+		$join = false;
+	}
+	switch($value){
+		case 'total':
+			if($atts['orderid']!=0){
+				db_getOrderPaymentInfo($atts['orderid']);
+			}elseif($atts['itemid']!=0){
+
+			}
+
+
+		break;
+		case 'tax';
+		break;
+	}
+
+}
+add_shortcode('pr-cost', 'purchase_records_cost_shortcode');
