@@ -69,30 +69,24 @@ function purchase_records_cost_shortcode($atts=[]){
 		array(
 			'orderid' => 0,
 			'itemid' => 0,
-			'type' => '',
-			'value' => 'total',
+			'type' => 'total',
 		), $atts, 'pr-cost');
 	if($atts['orderid']!=0){
-		$join = true;
 	}
 	if($atts['itemid']!=0){
 		$atts['orderid']=0;
-		$source='items';
-		$join = false;
 	}
-	switch($value){
-		case 'total':
-			if($atts['orderid']!=0){
-				db_getOrderPaymentInfo($atts['orderid']);
-			}elseif($atts['itemid']!=0){
-
-			}
-
-
-		break;
-		case 'tax';
-		break;
+	if($atts['itemid']!=0){
+		$result = pr_getItemByItemID($atts['itemid']);
+		if($result==null) return '';
+		switch('type'){
+			case 'item':
+				return number_format($result['cost'], 2, '.',',');
+				break;
+			default:
+				return number_format(($result['cost']*$result['quantity']), 2, '.',',');
+				break;
+		}
 	}
-
 }
 add_shortcode('pr-cost', 'purchase_records_cost_shortcode');
