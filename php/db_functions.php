@@ -9,7 +9,7 @@ function pr_getOrderByPostID($postID){
 		hit_log("Unexpected empty db call: ".__file__.__line__);
 		return null;
 	}
-	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pr_orders WHERE post_id=$postID", ARRAY_A);
+	$results = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}pr_orders WHERE post_id=$postID", ARRAY_A);
 	if(!isset($postID)){
 		hit_log("Unexpected empty db call: ".__file__.__line__);
 		return null;
@@ -18,7 +18,7 @@ function pr_getOrderByPostID($postID){
 		// Possibly fill values with nothing?
 		return ['order_id'=>'0', 'post_id'=>$postID, 'date_ordered'=>'', 'date_received'=>'', 'supplier'=>'', 'shipping_cost'=>0, 'tax'=>0];
 	}
-	return $results[0];
+	return $results;
 }
 function pr_getOrderByOrderID($orderID){
 	global $wpdb;
@@ -26,8 +26,8 @@ function pr_getOrderByOrderID($orderID){
 		hit_log("Unexpected empty db call: ".__file__.__line__);
 		return null;
 	}
-	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pr_orders WHERE order_id=$orderID", ARRAY_A);
-	return $results[0];
+	$results = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}pr_orders WHERE order_id=$orderID", ARRAY_A);
+	return $results;
 }
 
 function pr_getItemsByOrderID($orderID){
@@ -49,11 +49,11 @@ function pr_getItemByItemID($itemID){
 		hit_log("Unexpected empty db call: ".__file__.__line__);
 		return null;
 	}
-	$results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}pr_items WHERE item_id=$itemID", ARRAY_A);
+	$results = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}pr_items WHERE item_id=$itemID", ARRAY_A);
 	if($results==null){
 		return null;
 	}
-	return $results[0];
+	return $results;
 }
 
 function pr_saveOrderByID($order){
@@ -131,10 +131,12 @@ function pr_removeItemByID($itemID){
 	}
 }
 
-// Order can be 0 for all, or a specific value.
-// Allowable values for $type: total, tax, shipping, items
-function pr_getCost($orderID, $type){
+function pr_getCostByOrderID($orderID){
 	global $wpdb;
-		$result=$wpdb->select("");
-	return $result;
+	$result = $wpdb->get_results("SELECT 0 AS order_id, SUM(shipping) AS shipping, SUM(tax) AS tax, SUM(tools) AS tools, SUM(parts) AS parts FROM wp_pr_getCost UNION ALL SELECT * FROM wp_pr_getCost", ARRAY_A);
+	if($result===false){
+		error_log("DB Error: ".__file__.' '.__line__);
+	}
+	hit_log(print_r($result, true));
+	return $result[$orderID];
 }

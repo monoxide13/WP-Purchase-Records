@@ -71,11 +71,6 @@ function purchase_records_cost_shortcode($atts=[]){
 			'itemid' => 0,
 			'type' => 'total',
 		), $atts, 'pr-cost');
-	if($atts['orderid']!=0){
-	}
-	if($atts['itemid']!=0){
-		$atts['orderid']=0;
-	}
 	if($atts['itemid']!=0){
 		$result = pr_getItemByItemID($atts['itemid']);
 		if($result==null) return '';
@@ -85,6 +80,25 @@ function purchase_records_cost_shortcode($atts=[]){
 				break;
 			default:
 				return number_format(($result['cost']*$result['quantity']), 2, '.',',');
+				break;
+		}
+	}else{
+		$result = pr_getCostByOrderID($atts['orderid']);
+		switch($atts['type']){
+			case 'tax':
+				return $result['tax'];
+				break;
+			case 'shipping':
+				return $result['shipping'];
+				break;
+			case 'tools':
+				return $result['tools'];
+				break;
+			case 'parts':
+				return $result['parts'];
+				break;
+			default:
+				return $result['shipping']+$result['tax']+$result['tools']+$result['parts'];
 				break;
 		}
 	}
