@@ -21,7 +21,8 @@ I wrote this plugin to be able to log purchases for a project of mine. I wanted 
   - args:
     - itemid
 - [pr-cost]
-  - orderid
-  - itemid
-  - type=[item, cost]
-  - value=[sum, avg]
+  - orderid  (optional, default 0)
+  - itemid  (optional, default 0)
+  - type=[parts, tools, shipping, tax, total]  (optional, default 'total')
+  - If itemid is specified, it will force orderid to 0. If no orderid is specified, it will default to 0 and total all orders.
+
