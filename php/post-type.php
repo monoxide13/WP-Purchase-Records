@@ -14,7 +14,7 @@ function purchase_records_post(){
 		'new_item'           => __( 'New Purchase Record', 'purchase-records-text' ),
 		'edit_item'          => __( 'Edit Purchase Record', 'purchase-records-text' ),
 		'view_item'          => __( 'View Purchase Record', 'purchase-records-text' ),
-		'all_items'          => __( 'All Puchases Records', 'purchase-records-text' ),
+		'all_items'          => __( 'All Puchase Records', 'purchase-records-text' ),
 		'search_items'       => __( 'Search Puchase Records', 'purchase-records-text' ),
 		'parent_item_colon'  => __( 'Parent Record:', 'purchase-records-text' ),
 		'not_found'          => __( 'No Records found.', 'purchase-records-text' ),

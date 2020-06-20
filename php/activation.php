@@ -47,8 +47,8 @@ function purchase_records_deactivation(){
 	hit_log('Deleting DB');
 	global $wpdb;
 
-	//$wpdb->query( "DROP TABLE IF EXISTS pr_orders;");
-	//$wpdb->query( "DROP TABLE IF EXISTS pr_items;");
+	//$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}pr_orders;");
+	//$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}pr_items;");
 }
 register_deactivation_hook(PR_PLUGIN_LOCATION, 'purchase_records_deactivation');
 
