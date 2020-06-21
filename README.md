@@ -2,12 +2,13 @@
 
 ## Purpose:
 A wordpress plugin that creates a custom database and post type, allowing the logging of purchase orders and items.
+
 ## Reason for design:
 I wrote this plugin to be able to log purchases for a project of mine. I wanted a way to be able to record, search, and sum transactions. This way I can easily add up the total cost of the project, cost of tools, tax paid, shipping paid, and lots of other stuff. I wanted to save this information into it's own table vs metadata for easy access and use.
 
 ## Usage:
-1. Download and extract this into your wordpress plugin folder typically at wp-content/plugins.
-2. In wordpress activate the plugin.
+1. Download and extract this into your wordpress plugin folder typically, at wp-content/plugins.
+2. Activate the plugin in wordpress.
 
 ## Options:
 - database_prefix

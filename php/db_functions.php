@@ -137,6 +137,6 @@ function pr_getCostByOrderID($orderID){
 	if($result===false){
 		error_log("DB Error: ".__file__.' '.__line__);
 	}
-	hit_log(print_r($result, true));
+	//hit_log(print_r($result, true));
 	return $result[$orderID];
 }
