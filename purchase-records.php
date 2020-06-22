@@ -34,6 +34,3 @@ function purchase_records_load_csjs(){
 	wp_enqueue_style('style', PR_PLUGIN_URL . 'css/shortcode.css');
 }
 add_action('wp_enqueue_scripts', 'purchase_records_load_csjs');
-// Add options
-//add_option('purchase_records_post_types', 'post');
-
