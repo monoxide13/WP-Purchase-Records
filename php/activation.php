@@ -1,7 +1,7 @@
 <?php
+require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 function purchase_records_activation(){
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	hit_log('Creating DB');
 	global $wpdb;
 	$charset_collate = $wpdb->get_charset_collate();
@@ -43,7 +43,6 @@ function purchase_records_activation(){
 register_activation_hook(PR_PLUGIN_LOCATION, 'purchase_records_activation' );
 
 function purchase_records_deactivation(){
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	hit_log('Deleting DB');
 	global $wpdb;
 
