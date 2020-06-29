@@ -34,7 +34,7 @@ function purchase_records_post(){
 		'has_archive'        => true,
 		'hierarchical'       => false,
 		'menu_position'      => null,
-		'supports'           => array( 'title', 'editor', 'author', 'comments' )
+		'supports'           => array( 'title', 'editor', 'author', 'comments', 'thumbnail' )
 	);
 	register_post_type('pr_purchase_record', $args);
 };
