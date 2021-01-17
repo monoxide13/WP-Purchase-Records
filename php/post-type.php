@@ -80,10 +80,12 @@ function purchase_records_metabox_order_html($post){
 }
 // Item metabox html
 function purchase_records_metabox_item_shortcut($inputID, $type, $value, $options=[]){
+	$output="";
 	if($type=='checkbox' && $value==true){
 		$options['checked']='true';
+		$output.='<input type="hidden" name="pr_i_is[]" value="0"/>';
 	}
-	$output="<input id='$inputID' name='$inputID' type='$type' value='$value' class='purchase_records_metabox_item_table_items' ";
+	$output.="<input id='$inputID' name='$inputID' type='$type' value='$value' class='purchase_records_metabox_item_table_items' ";
 	foreach($options as $key=> $setting){
 		$output.= " $key='$setting'";
 	}
@@ -165,10 +167,28 @@ function purchase_records_metabox_save($postID, $post, $update){
 	$itemCount=sizeof($_POST['pr_i_id']); // How many items did user submit?
 	// Get a list of previously saved items.
 	$existingItemIDs=array_column(pr_getItemsByOrderID($_POST['pr_o_id']), 'item_id');
+
+	/* Parse the checkboxs and remove filler.
+	* Current value should be 0, if next value is 1, remove the current 0.
+	* If next value is 0 or non existant, that means the current value is 0 since value 1 is missing. */
+	$isToolArr=array();
+	$x=0;
+	while($x<count($_POST['pr_i_is'])){
+		if($x==count($_POST['pr_i_is'])){
+			$isToolArr[]=0;
+		}elseif($_POST['pr_i_is'][$x+1]==1){
+			$isToolArr[]=1;
+			++$x;
+		}else{
+			$isToolArr[]=0;
+		}
+		++$x;
+	};
 	
 	for($x=0; $x<$itemCount; $x++){
 		// If items have other ID, update and remove from list.
-		pr_saveItemByID(['item_id'=>$_POST['pr_i_id'][$x], 'order_id'=>$orderID, 'istool'=>$_POST['pr_i_is'][$x], 'item'=>$_POST['pr_i_nm'][$x], 'cost'=>$_POST['pr_i_cs'][$x], 'quantity'=>$_POST['pr_i_qt'][$x], 'weblink'=>$_POST['pr_i_wl'][$x]]);
+		pr_saveItemByID(['item_id'=>$_POST['pr_i_id'][$x], 'order_id'=>$orderID, 'istool'=>$isToolArr[$x], 'item'=>$_POST['pr_i_nm'][$x], 'cost'=>$_POST['pr_i_cs'][$x], 'quantity'=>$_POST['pr_i_qt'][$x], 'weblink'=>$_POST['pr_i_wl'][$x]]);
+		hit_log('ItemSaving:ID:'.$_POST['pr_i_id'][$x].':ck:'.$isToolArr[$x]."\n");
 		if($_POST['pr_i_id'][$x]>0){
 			unset($existingItemIDs[array_search($_POST['pr_i_id'][$x], $existingItemIDs)]);
 		}
