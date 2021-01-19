@@ -100,12 +100,13 @@ function pr_saveItemByID($item){
 	$item_id=0;
 	if(!(isset($item) && $item['item_id']!="")){
 		hit_log("Unexpected empty db call: ".__file__.__line__);
+		error_log("DB Error: ".__file__.__line__);
 		return null;
 	}
 	if($item['item_id']==0){
 		unset($item['item_id']);
 		$result=$wpdb->insert("{$wpdb->prefix}pr_items", $item);
-		$item_id = $wpdb->insert_id;
+		$item_id=$wpdb->insert_id;
 		if($result===false){
 			error_log("DB Error: ".__file__.__line__);
 		}
