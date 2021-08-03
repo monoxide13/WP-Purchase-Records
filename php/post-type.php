@@ -68,7 +68,7 @@ function purchase_records_metabox_order_html($post){
 	<input id='pr_o_id' name='pr_o_id' readonly='true' type='number' value='<?php echo $order['order_id'];?>'>
 	<?php
 
-	echo purchase_records_metabox_createBox('Supplier: ', 'pr_o_supplier', 'text', htmlentities(stripslashes($order['supplier']), ENT_QUOTES));
+	echo purchase_records_metabox_createBox('Supplier: ', 'pr_o_supplier', 'text', $order['supplier']);
 	echo purchase_records_metabox_createBox('Tax: ', 'pr_o_tax', 'number', $order['tax'], ['step'=>.01]);
 	echo purchase_records_metabox_createBox('Shipping: ', 'pr_o_shipping', 'number', $order['shipping_cost'], ['step'=>.01]);
 	echo purchase_records_metabox_createBox('Date Ordered: ', 'pr_o_ordered', 'date', $order['date_ordered']);
@@ -163,6 +163,9 @@ function purchase_records_metabox_save($postID, $post, $update){
 	hit_log('saving...\n');
 
 	// Save Order info
+	// Convert to HTML Special Chars
+	hit_log($_POST['pr_o_supplier']);
+	$_POST['pr_o_supplier'] = htmlspecialchars(stripslashes($_POST['pr_o_supplier']), ENT_QUOTES | ENT_html5, null, false);
 	$orderID=pr_saveOrderByID(['order_id'=>$_POST['pr_o_id'], 'post_id'=>$_POST['ID'], 'date_ordered'=>$_POST['pr_o_ordered'], 'date_received'=>$_POST['pr_o_received'], 'supplier'=>$_POST['pr_o_supplier'], 'shipping_cost'=>$_POST['pr_o_shipping'], 'tax'=>$_POST['pr_o_tax']]);
 
 	// Save Item info
