@@ -99,11 +99,11 @@ function purchase_records_metabox_items_line($item){
 	<td class='pr_c1'><button id='pr_i_rb[]' name='pr_i_rb[]' type='button' class='purchase_records_metabox_item_line' onclick='purchase_records_remove_meta_row(jQuery(this))'>-</button></td>
 <?php
 	echo "<td class='pr_c2'>".purchase_records_metabox_item_shortcut('pr_i_id[]', 'number', $item['item_id'], ['readonly'=>'true']).'</td>';
-	echo "<td class='pr_c3'>".purchase_records_metabox_item_shortcut('pr_i_nm[]', 'textbox', htmlentities(stripslashes($item['item']), ENT_QUOTES)).'</td>';
+	echo "<td class='pr_c3'>".purchase_records_metabox_item_shortcut('pr_i_nm[]', 'textbox', $item['item']).'</td>';
 	echo "<td class='pr_c4'>".purchase_records_metabox_item_shortcut('pr_i_is[]', 'checkbox', $item['istool'], ['style'=>'position:relative;left:25%;']).'</td>';
 	echo "<td class='pr_c5'>".purchase_records_metabox_item_shortcut('pr_i_cs[]', 'number', $item['cost'], ['step'=>.001]).'</td>';
 	echo "<td class='pr_c6'>".purchase_records_metabox_item_shortcut('pr_i_qt[]', 'number', $item['quantity'], ['step'=>1, 'min'=>0]).'</td>';
-	echo "<td class='pr_c7'>".purchase_records_metabox_item_shortcut('pr_i_wl[]', 'textbox', htmlentities(stripslashes($item['weblink']), ENT_QUOTES)).'</td>';
+	echo "<td class='pr_c7'>".purchase_records_metabox_item_shortcut('pr_i_wl[]', 'textbox', $item['weblink']).'</td>';
 }
 
 function purchase_records_metabox_items_html($post){
@@ -163,10 +163,7 @@ function purchase_records_metabox_save($postID, $post, $update){
 	hit_log('saving...\n');
 
 	// Save Order info
-	// Convert to HTML Special Chars
-	hit_log($_POST['pr_o_supplier']);
-	$_POST['pr_o_supplier'] = htmlspecialchars(stripslashes($_POST['pr_o_supplier']), ENT_QUOTES | ENT_html5, null, false);
-	$orderID=pr_saveOrderByID(['order_id'=>$_POST['pr_o_id'], 'post_id'=>$_POST['ID'], 'date_ordered'=>$_POST['pr_o_ordered'], 'date_received'=>$_POST['pr_o_received'], 'supplier'=>$_POST['pr_o_supplier'], 'shipping_cost'=>$_POST['pr_o_shipping'], 'tax'=>$_POST['pr_o_tax']]);
+	$orderID=pr_saveOrderByID(['order_id'=>$_POST['pr_o_id'], 'post_id'=>$_POST['ID'], 'date_ordered'=>$_POST['pr_o_ordered'], 'date_received'=>$_POST['pr_o_received'], 'supplier'=>htmlspecialchars(stripslashes($_POST['pr_o_supplier']), ENT_QUOTES | ENT_HTML5, null, false), 'shipping_cost'=>$_POST['pr_o_shipping'], 'tax'=>$_POST['pr_o_tax']]);
 
 	// Save Item info
 	$itemCount=sizeof($_POST['pr_i_id']); // How many items did user submit?
@@ -192,7 +189,7 @@ function purchase_records_metabox_save($postID, $post, $update){
 	
 	for($x=0; $x<$itemCount; $x++){
 		// If items have other ID, update and remove from list.
-		pr_saveItemByID(['item_id'=>$_POST['pr_i_id'][$x], 'order_id'=>$orderID, 'istool'=>(bool)$isToolArr[$x], 'item'=>$_POST['pr_i_nm'][$x], 'cost'=>$_POST['pr_i_cs'][$x], 'quantity'=>$_POST['pr_i_qt'][$x], 'weblink'=>$_POST['pr_i_wl'][$x]]);
+		pr_saveItemByID(['item_id'=>$_POST['pr_i_id'][$x], 'order_id'=>$orderID, 'istool'=>(bool)$isToolArr[$x], 'item'=>htmlspecialchars(stripslashes($_POST['pr_i_nm'][$x]), ENT_QUOTES | ENT_HTML5, null, false), 'cost'=>$_POST['pr_i_cs'][$x], 'quantity'=>$_POST['pr_i_qt'][$x], 'weblink'=>$_POST['pr_i_wl'][$x]]);
 		if($_POST['pr_i_id'][$x]>0){
 			unset($existingItemIDs[array_search($_POST['pr_i_id'][$x], $existingItemIDs)]);
 		}
